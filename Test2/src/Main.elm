@@ -10,17 +10,19 @@ import Html.Attributes exposing (value)
 
 
 ---- MODEL ----
+type Content = 
+    String
 
+type alias Tasklist =
+    name : Content
 
 type alias Model = 
-    {content : String
-    , savedModel : List String}
+    {task : List Tasklist}
 
 
 init : Model
 init =
-     {content = ""
-     , savedModel= [""]}
+    Tasklist = ""
 
 
 
@@ -32,8 +34,8 @@ type Msg = Add String | Save String
 update : Msg -> Model -> Model
 update msg model=
     case msg of 
-        Add newContent->
-           {model | content = newContent } 
+        Add Content->
+           {model | Content =  } 
         Save newContent->
             newContent :: savedModel
 ---- VIEW
