@@ -1,52 +1,65 @@
 module Main exposing (..)
 
 import Browser
-import Html exposing (Html, text, div, h1, img)
-import Html.Attributes exposing (src)
-import Html.Attributes exposing (placeholder)
-import Html.Events exposing (onInput)
+import Html exposing (Html, text, div, h1, img, button)
+import Html.Attributes exposing (placeholder, value, src)
+import Html.Events exposing (onInput, onClick)
 import Html exposing (input)
-import Html.Attributes exposing (value)
+import Platform exposing (Task)
+import Platform.Cmd exposing (none)
+
 
 
 ---- MODEL ----
-type Content = 
-    String
+type Status = InProgress
+    | NotStarted
+    | Done
 
-type alias Tasklist =
-    name : Content
+type alias Tasks = 
+    {name : String
+    , id : Int
+    , status : Status}
 
 type alias Model = 
-    {task : List Tasklist}
+    {tasks : List Tasks}
 
-
-init : Model
+listDepart : List Tasks
+listDepart=
+    [ 
+        {name = "manger", id = 1, status = Done}
+        , {name = "boire", id = 2, status = Done}
+    ]
+init : (Model, Cmd Msg)
 init =
-    Tasklist = ""
+    ({tasks=listDepart}, Cmd.none)
 
 
 
 ---- UPDATE ----
 
 
-type Msg = Add String | Save String
+type Msg = None
 
-update : Msg -> Model -> Model
+update : Msg -> Model -> (Model, Cmd Msg)
 update msg model=
-    case msg of 
-        Add Content->
-           {model | Content =  } 
-        Save newContent->
-            newContent :: savedModel
----- VIEW
+    case msg of  
+        None -> 
+            (model :: {name = "Tea", id = 3, status = InProgress}, Cmd.none)  
+            
+       
+    
+        
+
+
+--- VIEW
 
 
 view : Model -> Html Msg
 view model =
     div []
-        [ img [ src "/logo.svg" ] []
-        , input [placeholder "text to reverse",value model.content, onInput Add][], div [] [ text (model.content)]
-        ]
+        [text "model.name"]
+    div [] [button "TEST", onClick None]
+        
 
 
 
@@ -55,5 +68,9 @@ view model =
 
 main : Program () Model Msg
 main =
-    Browser.sandbox
-        { init = Model, view = view, update = update}
+    Browser.element
+        { view = view
+        , init = \_ -> init
+        , update = none
+        , subscriptions = always Sub.none
+        }
