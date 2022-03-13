@@ -10,47 +10,57 @@ import Html.Events exposing (onClick)
 
 
 type alias Model = 
-    {number : Int
-    , listNumber : List Int}
+    {number : List String}
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( {number = 0, listNumber = []}, Cmd.none )
+    ( 
+       {
+        number=
+    [
+    "1",
+    "2",
+    "3"
+    ]
+        }
+    , Cmd.none 
+    )
 
 
 
 ---- UPDATE ----
 
 
-type Msg
-    = Increment
-    | Decrement
-    | SaveToList
+type Msg 
+    =NoOp 
+   -- Increment 
+   -- | Decrement
+    --| SaveToList
 
 
-update : Msg -> Model -> Model
+update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
-    case msg of
-        Increment ->
-            ( {model | model.number + 1} , Cmd.none)
-        Decrement ->
-            ( {model | model.number - 1} , Cmd.none)
-        SaveToList ->
-            ( {model.number :: model.listNumber}, Cmd.none)
+    case msg of 
+        NoOp ->
+            (model, Cmd.none)
+        --Increment ->
+            --( model + 1 , Cmd.none)
+       -- Decrement->
+            --( model - 1 , Cmd.none)
+       -- SaveToList newNumber ->
+           -- ( newNumber :: listNumber, Cmd.none)
 
 
 ---- VIEW ----
-
+numberItem : List String -> String -> Html Msg
+numberItem liste = 
+    div []
+        [text (List.map liste)]
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ button [ onClick Increment] [text "+"]
-        , div [] [ text (String.fromInt model) ]
-        , button [ onClick Decrement] [text "-"]
-        , div [] [ text (List.map (model String.fromInt))]
-        , button [ onClick SaveToList][text "Save"]]
+   div [] [numberItem model.number]
     
         
 
