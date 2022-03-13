@@ -19,10 +19,21 @@ type alias Tasks =
     {name : String
     , id : Int
     , status : Status}
+type alias Newtask =
+    {name: String
+    , id :Int
+    , status : Status}
+
 
 type alias Model = 
-    {tasks : List Tasks}
+    {tasks : List Tasks
+    , newTask : List Newtask}
 
+listAjout : List Newtask
+listAjout = 
+    [
+        {name = "dormir", id = 3, status = NotStarted}
+    ]
 listDepart : List Tasks
 listDepart=
     [ 
@@ -31,7 +42,7 @@ listDepart=
     ]
 init : (Model, Cmd Msg)
 init =
-    ({tasks=listDepart}, Cmd.none)
+    ({tasks=listDepart, newTask=listAjout}, Cmd.none)
 
 
 
@@ -40,11 +51,11 @@ init =
 
 type Msg = None
 
-update : Msg -> Model -> (Model, Cmd Msg)
+update : Msg -> Tasks -> (Tasks, Cmd Msg)
 update msg model=
     case msg of  
         None -> 
-            (model :: {name = "Tea", id = 3, status = InProgress}, Cmd.none)  
+            ( {newTask :: tasks}, Cmd.none)  
             
        
     
