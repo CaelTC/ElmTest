@@ -11,7 +11,7 @@ import Html.Events exposing (onClick)
 
 type alias Model = 
     {number : Int
-    |listNumber : List Int}
+    , listNumber : List Int}
 
 
 init : ( Model, Cmd Msg )
@@ -29,7 +29,7 @@ type Msg
     | SaveToList
 
 
-update : Msg -> Model -> ( Model, Cmd Msg )
+update : Msg -> Model -> Model
 update msg model =
     case msg of
         Increment ->
@@ -37,7 +37,7 @@ update msg model =
         Decrement ->
             ( {model | model.number - 1} , Cmd.none)
         SaveToList ->
-            ( model.number :: model.listNumber, Cmd.none)
+            ( {model.number :: model.listNumber}, Cmd.none)
 
 
 ---- VIEW ----
