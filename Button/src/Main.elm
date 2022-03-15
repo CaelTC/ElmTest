@@ -1,7 +1,7 @@
 module Main exposing (..)
 
 import Browser
-import Html exposing (Html, text, div, h1, img, button)
+import Html exposing (Html, text, div, h1, img, button, li, ul)
 import Html.Attributes exposing (src)
 import Html.Events exposing (onClick)
 
@@ -29,27 +29,33 @@ type Msg
     | SaveToList
 
 
-update : Msg -> Model -> Model
+update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
     case msg of
         Increment ->
-            ( {model | number | number  = number + 1} , Cmd.none)
+            ( {model | number  = model.number + 1} , Cmd.none)
         Decrement ->
-            ( {model | number | number = number - 1} , Cmd.none)
+            ( {model | number = model.number - 1} , Cmd.none)
         SaveToList ->
-            ( {model| listNumber |  listNumber = number :: listNumber}, Cmd.none)
+            ( {model| listNumber = (model.number :: model.listNumber)}, Cmd.none)
 
 
 ---- VIEW ----
 
+renderList : List String -> Html msg
+renderList lst =
+    lst
+       |> List.map (\l -> li [] [ text l ])
+       |> ul []
 
+    
 view : Model -> Html Msg
 view model =
     div []
         [ button [ onClick Increment] [text "+"]
-        , div [] [ text (String.fromInt model) ]
+        , div [] [ text (String.fromInt model.number) ]
         , button [ onClick Decrement] [text "-"]
-        , div [] [ text (List.map (model String.fromInt))]
+        , div [] [ renderList (List.map String.fromInt model.listNumber)]
         , button [ onClick SaveToList][text "Save"]]
     
         
