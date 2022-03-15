@@ -33,11 +33,11 @@ update : Msg -> Model -> Model
 update msg model =
     case msg of
         Increment ->
-            ( {model | model.number + 1} , Cmd.none)
+            ( {model | number | number  = number + 1} , Cmd.none)
         Decrement ->
-            ( {model | model.number - 1} , Cmd.none)
+            ( {model | number | number = number - 1} , Cmd.none)
         SaveToList ->
-            ( {model.number :: model.listNumber}, Cmd.none)
+            ( {model| listNumber |  listNumber = number :: listNumber}, Cmd.none)
 
 
 ---- VIEW ----
