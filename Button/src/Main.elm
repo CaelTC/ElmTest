@@ -8,15 +8,17 @@ import Html.Events exposing (onClick, onInput)
 
 ---- MODEL ----
 
+    
 
 type alias Model = 
     { tasks : String
-    , listTasks : List String}
+    , listTasks : List String
+    , isDone : Bool}
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( { tasks = "", listTasks = ["Test"]}, Cmd.none )
+    ( { tasks = "", listTasks = ["Test"], isDone = False}, Cmd.none )
 
 
 
@@ -26,6 +28,7 @@ init =
 type Msg
     = NewTask String
     | SaveToList
+    | ChangeState
 
 
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -35,7 +38,12 @@ update msg model =
             ( {model | tasks = newName} , Cmd.none)
         SaveToList ->
             ( {model| listTasks = (model.tasks :: model.listTasks)}, Cmd.none)
-
+        Completed ->
+            if {model | isDone = True}
+                then ({model | isDone = False}, Cmd.none)
+            else {model | isDone = False}
+                then ({model | isDone = True}, Cmd.none)
+                
 
 ---- VIEW ----
 
