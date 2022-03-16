@@ -1,22 +1,22 @@
 module Main exposing (..)
 
 import Browser
-import Html exposing (Html, text, div, h1, img, button, li, ul)
-import Html.Attributes exposing (src)
-import Html.Events exposing (onClick)
+import Html exposing (Html, Attribute, text, div, button, li, ul, input)
+import Html.Attributes exposing (..)
+import Html.Events exposing (onClick, onInput)
 
 
 ---- MODEL ----
 
 
 type alias Model = 
-    {number : Int
-    , listNumber : List Int}
+    { tasks : String
+    , listTasks : List String}
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( {number = 0, listNumber = []}, Cmd.none )
+    ( { tasks = "", listTasks = ["Test"]}, Cmd.none )
 
 
 
@@ -24,20 +24,17 @@ init =
 
 
 type Msg
-    = Increment
-    | Decrement
+    = NewTask String
     | SaveToList
 
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
     case msg of
-        Increment ->
-            ( {model | number  = model.number + 1} , Cmd.none)
-        Decrement ->
-            ( {model | number = model.number - 1} , Cmd.none)
+        NewTask newName ->
+            ( {model | tasks = newName} , Cmd.none)
         SaveToList ->
-            ( {model| listNumber = (model.number :: model.listNumber)}, Cmd.none)
+            ( {model| listTasks = (model.tasks :: model.listTasks)}, Cmd.none)
 
 
 ---- VIEW ----
@@ -52,10 +49,8 @@ renderList lst =
 view : Model -> Html Msg
 view model =
     div []
-        [ button [ onClick Increment] [text "+"]
-        , div [] [ text (String.fromInt model.number) ]
-        , button [ onClick Decrement] [text "-"]
-        , div [] [ renderList (List.map String.fromInt model.listNumber)]
+        [ input [placeholder "", value model.tasks, onInput NewTask] []
+        , div [] [ renderList (model.listTasks)]
         , button [ onClick SaveToList][text "Save"]]
     
         
