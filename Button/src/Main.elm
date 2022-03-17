@@ -1,31 +1,23 @@
 module Main exposing (..)
 
 import Browser
-import Html exposing (Html, Attribute, text, div, button, li, ul, input)
+import Html exposing (Html, text, div, h1, img, button, li, ul, input)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
 
 
 ---- MODEL ----
-type alias Tasks = 
-    { 
-        name : String
-    ,   status : Bool
-    }
+
 
 type alias Model = 
-    { tasks : Maybe String
-    , listTasks : List Tasks}
+    {task : String
+    , listTasks : List String}
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( { tasks = Nothing, listTasks = defaultTask}, Cmd.none )
-defaultTask: List Tasks
-defaultTask = 
-    [
-        {name = "test", status = True}
-    ]
+    ( {task = "", listTasks = []}, Cmd.none )
+
 
 
 ---- UPDATE ----
@@ -39,42 +31,32 @@ type Msg
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
     case msg of
-        NewTask newName ->
-            ( {model | tasks = Just newName} , Cmd.none)
+        NewTask newTask ->
+            ( {model | task = newTask} , Cmd.none)
         SaveToList ->
-            case model.tasks of
-                Nothing ->
+            case model.task of
+                "" ->
                     (model, Cmd.none)
-                Just ""->
-                    (model, Cmd.none)
-                Just newName ->
-                    ( 
-                        model
-                        |> addNew newName
-                        |> clearField
-                    ,   Cmd.none
-                    )
+                newTask ->
+                    ( model
+                            |> addTask newTask
+                            |> clearSpace
+                    ,   Cmd.none)                 
+
+addTask : String -> Model -> Model
+addTask newTask model= 
+    {
+        model | listTasks = (newTask :: model.listTasks)
+            
+    }
 
 
-addNew : String -> Model -> Model
-addNew newName model = 
-    { model
-    | listTasks =
-        {
-            name = newName
-        ,   status = True
-        }
-            :: model.listTasks
-    }            
-
-clearField model = 
-    {model | tasks = Nothing}
+clearSpace model = 
+    {model | task = ""}
 
 
 
 ---- VIEW ----
-
-
 
 renderList : List String -> Html msg
 renderList lst =
@@ -86,10 +68,10 @@ renderList lst =
 view : Model -> Html Msg
 view model =
     div []
-        [ input [placeholder "", value model.tasks, onInput NewTask] []
+        [ input [placeholder "", value model.task, onInput NewTask] []
         , div [] [ renderList (model.listTasks)]
-        , button [ onClick SaveToList][text "Save"]]
-    
+        , button [ onClick SaveToList][text "Save"]
+        , input [type_ "checkbox"][]]
         
 
 
