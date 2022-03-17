@@ -7,17 +7,25 @@ import Html.Events exposing (onClick, onInput)
 
 
 ---- MODEL ----
-
+type alias Tasks = 
+    { 
+        name : String
+    ,   status : Bool
+    }
 
 type alias Model = 
-    { tasks : String
-    , listTasks : List String}
+    { tasks : Maybe String
+    , listTasks : List Tasks}
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( { tasks = "", listTasks = ["Test"]}, Cmd.none )
-
+    ( { tasks = Nothing, listTasks = defaultTask}, Cmd.none )
+defaultTask: List Tasks
+defaultTask = 
+    [
+        {name = "test", status = True}
+    ]
 
 
 ---- UPDATE ----
@@ -32,12 +40,41 @@ update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
     case msg of
         NewTask newName ->
-            ( {model | tasks = newName} , Cmd.none)
+            ( {model | tasks = Just newName} , Cmd.none)
         SaveToList ->
-            ( {model| listTasks = (model.tasks :: model.listTasks)}, Cmd.none)
+            case model.tasks of
+                Nothing ->
+                    (model, Cmd.none)
+                Just ""->
+                    (model, Cmd.none)
+                Just newName ->
+                    ( 
+                        model
+                        |> addNew newName
+                        |> clearField
+                    ,   Cmd.none
+                    )
+
+
+addNew : String -> Model -> Model
+addNew newName model = 
+    { model
+    | listTasks =
+        {
+            name = newName
+        ,   status = True
+        }
+            :: model.listTasks
+    }            
+
+clearField model = 
+    {model | tasks = Nothing}
+
 
 
 ---- VIEW ----
+
+
 
 renderList : List String -> Html msg
 renderList lst =
