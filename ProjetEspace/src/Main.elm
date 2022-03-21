@@ -15,7 +15,7 @@ type alias Model =
 
 init : ( Model, Cmd Msg )
 init =
-    ( {textTotest = "entrez mot de passe"}, Cmd.none )
+    ( {textTotest = "M"}, Cmd.none )
 
 
 
@@ -24,6 +24,7 @@ init =
 
 type Msg
     = Test String
+    | Analyse String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -40,8 +41,7 @@ update msg model =
 view : Model -> Html Msg
 view model =
     div []
-        [ input [ placeholder (model.textTotest) []] []
-        , h1 [] [ text "Your Elm App is working!" ]
+        [ input [ placeholder "Écrivez votre texte"] []
         ]
 
 
