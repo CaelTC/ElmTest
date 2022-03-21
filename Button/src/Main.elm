@@ -1,63 +1,100 @@
 module Main exposing (..)
-
+import Array exposing (Array)
 import Browser
-import Html exposing (Html, text, div, h1, img, button, li, ul)
-import Html.Attributes exposing (src)
-import Html.Events exposing (onClick)
+import Html exposing (Html, text, div, h1, img, button, li, ul, input)
+import Html.Attributes exposing (..)
+import Html.Events exposing (onClick, onInput)
 
 
 ---- MODEL ----
-
+type alias Task =
+    { 
+        name : String
+    }
 
 type alias Model = 
-    {number : Int
-    , listNumber : List Int}
+    {
+        nameInput : String 
+    ,   listTasks : Array Task
+    }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( {number = 0, listNumber = []}, Cmd.none )
+    ( {nameInput = "", listTasks = defaultTasks}, Cmd.none )
 
-
+defaultTasks : Array Task
+defaultTasks = 
+    Array.fromList [
+        {
+            name = "Manger"
+        }
+    ]
 
 ---- UPDATE ----
 
 
 type Msg
-    = Increment
-    | Decrement
-    | SaveToList
+    = NameInput String
+    | SaveToList String
+    | Delete Int
 
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
     case msg of
-        Increment ->
-            ( {model | number  = model.number + 1} , Cmd.none)
-        Decrement ->
-            ( {model | number = model.number - 1} , Cmd.none)
-        SaveToList ->
-            ( {model| listNumber = (model.number :: model.listNumber)}, Cmd.none)
+        NameInput newName ->
+            ({model | nameInput = newName}, Cmd.none)   
+
+        SaveToList newName->
+            if String.isEmpty model.nameInput then
+                    (model, Cmd.none)
+                else
+                    let
+                        task = Task newName
+                    in
+                        ({model | listTasks = Array.push task model.listTasks}, Cmd.none)
+       
+        Delete id ->
+            let
+                updated = Array.append a1 a2
+                a1 = Array.slice 0 id model.listTasks
+                a2 = Array.slice (id+1) (Array.length model.listTasks) model.listTasks
+            in
+            ({model | listTasks = updated}, Cmd.none)
+            
+
+
+
+
 
 
 ---- VIEW ----
+renderTask : Int -> Task -> Html Msg
+renderTask id task =
+        li [] [text task.name, button [onClick (Delete id)][text "Done"] ]
 
-renderList : List String -> Html msg
-renderList lst =
-    lst
-       |> List.map (\l -> li [] [ text l ])
-       |> ul []
+
+
+renderList : Array Task -> Html Msg
+renderList tasks =
+        tasks
+            |> Array.toList
+            |> List.sortBy .name
+            |> Array.fromList
+            |> Array.indexedMap renderTask
+            |> Array.toList
+            |> ul []
+
 
     
 view : Model -> Html Msg
 view model =
     div []
-        [ button [ onClick Increment] [text "+"]
-        , div [] [ text (String.fromInt model.number) ]
-        , button [ onClick Decrement] [text "-"]
-        , div [] [ renderList (List.map String.fromInt model.listNumber)]
-        , button [ onClick SaveToList][text "Save"]]
-    
+        [ input [placeholder "", value model.nameInput, onInput NameInput] []
+        , div [] [ renderList model.listTasks ]
+        , button [ onClick <|SaveToList model.nameInput][text "Save"]
+        , input [type_ "checkbox"][]]
         
 
 
