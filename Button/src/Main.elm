@@ -39,10 +39,7 @@ update msg model =
         SaveToList ->
             ( {model| listTasks = (model.tasks :: model.listTasks)}, Cmd.none)
         Completed ->
-            if {model | isDone = True}
-                then ({model | isDone = False}, Cmd.none)
-            else {model | isDone = False}
-                then ({model | isDone = True}, Cmd.none)
+            ({model | isDone = True}, Cmd.none)
                 
 
 ---- VIEW ----
@@ -50,7 +47,7 @@ update msg model =
 renderList : List String -> Html msg
 renderList lst =
     lst
-       |> List.map (\l -> li [] [ text l ])
+       |> List.map (\l -> li [] [ text l, button ["Done"] ])
        |> ul []
 
     
@@ -59,8 +56,9 @@ view model =
     div []
         [ input [placeholder "", value model.tasks, onInput NewTask] []
         , div [] [ renderList (model.listTasks)]
-        , button [ onClick SaveToList][text "Save"]]
-    
+        , button [ onClick SaveToList][text "Save"]
+        , button [ onClick Completed][text "Fait"]]
+
         
 
 
