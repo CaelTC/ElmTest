@@ -18,7 +18,13 @@ type alias Model =
 
 init : ( Model, Cmd Msg )
 init =
-    ( {textTotest = "123", passedTest = True}, Cmd.none )
+    ( 
+        {
+          textTotest = "123"
+        , passedTest = True
+        }
+    , Cmd.none
+    )
 
 
 
@@ -39,12 +45,12 @@ update msg model =
                 let 
                     newText = String.endsWith " " (model.textTotest)
                 in 
-                 if
-                    newText == False
-                        then 
-                            ({model | passedTest = False}, Cmd.none)
-                else
-                    ({model | passedTest = True}, Cmd.none)
+                    if
+                        newText == False
+                            then 
+                                ({model | passedTest = True}, Cmd.none)
+                    else
+                        ({model | passedTest = False}, Cmd.none)
 
 
 
@@ -52,17 +58,19 @@ update msg model =
 result : Model -> String
 result model =   
     case model.passedTest of 
-        True ->
-            "Votre mot de passe fini par un ESPACE. CHANGER LE AU PLUS VITE"
         False ->
+            "Votre mot de passe fini par un ESPACE. CHANGER LE AU PLUS VITE"
+        True ->
             "Mot de passe accepté"
+
 
 view : Model -> Html Msg
 view model =
-    div [] [ input [ placeholder "Écrivez votre texte", onInput Write][]
-    , h1 [] [text (result model)]
-    , button [onClick Verify ] [text "Vérifier"]
-    ]
+    div [] [ 
+            input [ placeholder "Écrivez votre texte", onInput Write][]
+            , h1 [] [text (result model)]
+            , button [onClick Verify ] [text "Vérifier"]
+            ]
     
     
     
